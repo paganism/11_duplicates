@@ -10,20 +10,34 @@ def get_file_list(directory):
     return file_list
 
 
-def get_duplicate_list(file_list):
-    duplicate_list = []
-    for i in range(len(file_list)):
-        for j in range(i + 1, len(file_list)):
-            if os.path.basename(file_list[i]) == os.path.basename(file_list[j]):
-                if os.path.getsize(file_list[i]) == os.path.getsize(file_list[j]):
-                    duplicate_list.append(file_list[i])
-                    duplicate_list.append(file_list[j])
-    return duplicate_list
+def get_duplicates(file_list):
+    duplicates = {}
+    files_parameters = {}
+    for file in file_list:
+        if (os.path.basename(file),
+                os.path.getsize(file)) in files_parameters.keys():
+            try:
+                duplicates[os.path.basename(file)].append(file)
+            except KeyError:
+                duplicates[os.path.basename(file)] = [
+                    file,
+                    files_parameters.get((
+                        os.path.basename(file),
+                        os.path.getsize(file))
+                    )]
+        else:
+            files_parameters[
+                os.path.basename(file),
+                os.path.getsize(file)] = file
+    return duplicates
 
 
 if __name__ == '__main__':
-    directory = sys.argv[1]
-    files = get_file_list(directory)
-    result_list = get_duplicate_list(files)
-    for i in set(result_list):
-        print(i)
+    if len(sys.argv) > 1 and os.path.exists(sys.argv[1]):
+        directory = sys.argv[1]
+    else:
+        sys.exit('Не задан аргумент или каталог не существует')
+    file_list = get_file_list(directory)
+    dups = get_duplicates(file_list)
+    for file, path in dups.items():
+        print(file, path)
