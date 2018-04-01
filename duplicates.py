@@ -3,11 +3,11 @@ import sys
 from collections import defaultdict
 
 
-def get_all_files(directory):
+def get_all_file_names(directory):
     all_files = defaultdict(list)
-    for dirs, subdirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(dirs, file)
+    for dir, subdir, file_name in os.walk(directory):
+        for file in file_name:
+            file_path = os.path.join(dir, file)
             file_size = os.path.getsize(file)
             name_size_together = (file, file_size)
             all_files[name_size_together].append(file_path)
@@ -15,11 +15,11 @@ def get_all_files(directory):
 
 
 def find_duplicates(all_files):
-    duplicate = {}
-    for name_size_together, file_path in all_files.items():
+    duplicates = {}
+    for name_size_tuple, file_path in all_files.items():
         if len(file_path) > 1:
-            duplicate.update({name_size_together: file_path})
-    return duplicate
+            duplicates.update({name_size_tuple: file_path})
+    return duplicates
 
 
 if __name__ == '__main__':
@@ -27,8 +27,8 @@ if __name__ == '__main__':
         directory = sys.argv[1]
     else:
         sys.exit('Не задан аргумент или каталог не существует')
-    all_files = get_all_files(directory)
-    duplicate = find_duplicates(all_files)
-    for name_size_together, file_path in duplicate.items():
-        print('Файл :', name_size_together[0],
+    all_files = get_all_file_names(directory)
+    duplicates = find_duplicates(all_files)
+    for name_size_tuple, file_path in duplicates.items():
+        print('Файл :', name_size_tuple[0],
               '\nДублируется :', file_path)
