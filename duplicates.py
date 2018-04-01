@@ -31,4 +31,4 @@ if __name__ == '__main__':
     duplicate = find_duplicates(all_files)
     for name_size_together, file_path in duplicate.items():
         print('Файл :', name_size_together[0],
-              '\nДублируется :', file_path[0:])
+              '\nДублируется :', file_path)
