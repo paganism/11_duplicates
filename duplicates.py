@@ -5,11 +5,11 @@ from collections import defaultdict
 
 def get_all_file_names(directory):
     all_files = defaultdict(list)
-    for dir, subdir, file_name in os.walk(directory):
-        for file in file_name:
-            file_path = os.path.join(dir, file)
-            file_size = os.path.getsize(file)
-            name_size_together = (file, file_size)
+    for folder, subdir, file_names in os.walk(directory):
+        for file_name in file_names:
+            file_path = os.path.join(folder, file_name)
+            file_size = os.path.getsize(file_name)
+            name_size_together = (file_name, file_size)
             all_files[name_size_together].append(file_path)
     return all_files
 
