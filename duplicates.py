@@ -1,35 +1,25 @@
 import os
 import sys
+from collections import defaultdict
 
 
-def get_file_list(directory):
-    file_list = []
-    for d, dirs, files in os.walk(directory):
+def get_all_files(directory):
+    all_files = defaultdict(list)
+    for dirs, subdirs, files in os.walk(directory):
         for file in files:
-            file_list.append(os.path.join(d, file))
-    return file_list
+            file_path = os.path.join(dirs, file)
+            file_size = os.path.getsize(file)
+            name_size_together = (file, file_size)
+            all_files[name_size_together].append(file_path)
+    return all_files
 
 
-def get_duplicates(file_list):
-    duplicates = {}
-    files_parameters = {}
-    for file in file_list:
-        if (os.path.basename(file),
-                os.path.getsize(file)) in files_parameters.keys():
-            try:
-                duplicates[os.path.basename(file)].append(file)
-            except KeyError:
-                duplicates[os.path.basename(file)] = [
-                    file,
-                    files_parameters.get((
-                        os.path.basename(file),
-                        os.path.getsize(file))
-                    )]
-        else:
-            files_parameters[
-                os.path.basename(file),
-                os.path.getsize(file)] = file
-    return duplicates
+def find_duplicates(all_files):
+    duplicate = {}
+    for name_size_together, file_path in all_files.items():
+        if len(file_path) > 1:
+            duplicate.update({name_size_together: file_path})
+    return duplicate
 
 
 if __name__ == '__main__':
@@ -37,7 +27,8 @@ if __name__ == '__main__':
         directory = sys.argv[1]
     else:
         sys.exit('Не задан аргумент или каталог не существует')
-    file_list = get_file_list(directory)
-    dups = get_duplicates(file_list)
-    for file, path in dups.items():
-        print(file, path)
+    all_files = get_all_files(directory)
+    duplicate = find_duplicates(all_files)
+    for name_size_together, file_path in duplicate.items():
+        print('Файл :', name_size_together[0],
+              '\nДублируется :', file_path[0:])

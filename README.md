@@ -7,7 +7,8 @@ For this script you should python3.5
 ```
 [user@server]$ python3.5 duplicates.py 'home/belov/devman/11_duplicates/
 
-README.md ['/home/user/devman/11_duplicates/123/README.md', '/home/user/devman/11_duplicates/README.md', '/home/user/devman/11_duplicates/hvg/README.md', '/home/user/devman/11_duplicates/hvg/gvg/README.md']
+Файл : README.md 
+Дублируется : ['/home/user/logs/README.md', '/home/user/logs/devman/README.md']
 
 ```
 
